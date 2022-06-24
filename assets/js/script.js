@@ -47,6 +47,7 @@ var createTask = function(taskText, taskDate, taskList) {
   };
 
   var auditTask = function(taskEl) {
+    console.log(taskEl);
     //get date from task alement
     var date = $(taskEl).find('span').text().trim();
     
@@ -75,16 +76,18 @@ var createTask = function(taskText, taskDate, taskList) {
     tolerance: "pointer",
     helper: "clone",
     activate: function (event, ui) {
-      console.log(ui);
+      $(this).addClass("dropover");
+      $(".bottom-trash").addClass("bottom-trash-drag");
     },
     deactivate: function (event, ui) {
-      console.log(ui);
+      $(this).addClass("dropover");
+      $(".bottom-trash").removeClass("bottom-trash-drag");
     },
     over: function (event) {
-      console.log(event);
+      $(event.target).addClass("dropover-active");
     },
     out: function (event) {
-      console.log(event);
+      $(event.target).removeClass("dropover-active");
     },
     update: function() {
 
@@ -124,12 +127,14 @@ var createTask = function(taskText, taskDate, taskList) {
     tolerance: "touch",
     drop: function (event, ui) {
       ui.draggable.remove();
+      $(".bottom-trash").removeClass("bottom-trash-active");
     },
     over: function (event, ui) {
       console.log(ui);
+      $(".bottom-trash").addClass("bottom-trash-active");
     },
     out: function (event, ui) {
-      console.log(ui);
+      $(".bottom-trash").removeClass("bottom-trash-active");
     }
   });
 
@@ -150,7 +155,7 @@ var createTask = function(taskText, taskDate, taskList) {
   });
 
   // save button in modal was clicked
-  $("#task-form-modal .btn-primary").click(function () {
+  $("#task-form-modal .btn-save").click(function () {
     // get form values
     var taskText = $("#modalTaskDescription").val();
     var taskDate = $("#modalDueDate").val();
@@ -274,4 +279,8 @@ var createTask = function(taskText, taskDate, taskList) {
   // load tasks for the first time
   loadTasks();
 
-
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000 * 60) *30);
